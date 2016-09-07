@@ -53,23 +53,24 @@ mc1 <- function(ac, wr = FALSE) {
   
   stime <- Sys.time()
   
-  ## Set conc to three significant figures
-  dat[ , conc := signif(conc, 3)]
+  ## Create 'rndc' -- a rounded concentration value to do the concentration
+  ## indexing.
+  dat[ , rndc := signif(conc, 3)]
   
   ## Define replicate id
   # Order by the following columns
   setkeyv(dat, c('acid', 'srcf', 'apid', 'coli', 'rowi', 'spid', 'conc')) 
   # Define rpid column for test compound wells
   nconc <- dat[wllt == "t" , 
-               list(n = lu(conc)), 
+               list(n = lu(rndc)), 
                by = list(acid, apid, spid)][ , list(nconc = min(n)), by = acid]
   dat[wllt == "t" & acid %in% nconc[nconc > 1, acid],
-      rpid := paste(acid, spid, wllt, srcf, apid, "rep1", conc, sep = "_")]
+      rpid := paste(acid, spid, wllt, srcf, apid, "rep1", rndc, sep = "_")]
   dat[wllt == "t" & acid %in% nconc[nconc == 1, acid],
-      rpid := paste(acid, spid, wllt, srcf, "rep1", conc, sep = "_")]
+      rpid := paste(acid, spid, wllt, srcf, "rep1", rndc, sep = "_")]
   # Define rpid column for non-test compound wells
   dat[wllt != "t", 
-      rpid := paste(acid, spid, wllt, srcf, apid, "rep1", conc, sep = "_")] 
+      rpid := paste(acid, spid, wllt, srcf, apid, "rep1", rndc, sep = "_")] 
   # Increment rpid 
   dat_rpid <- dat[ , rpid]
   j = 2L
@@ -85,7 +86,7 @@ mc1 <- function(ac, wr = FALSE) {
   
   ## Define concentration index
   indexfunc <- function(x) as.integer(rank(unique(x))[match(x, unique(x))])
-  dat[ , cndx := indexfunc(conc), by = list(rpid)]
+  dat[ , cndx := indexfunc(rndc), by = list(rpid)]
   
   ## Define replicate index
   # Create temporary table containing the unique replicate ids
@@ -104,8 +105,8 @@ mc1 <- function(ac, wr = FALSE) {
   setkey(trdt, rpid)
   dat[ , repi := trdt[dat, repi]]
   
-  ## Remove rpid column
-  dat[, rpid := NULL]
+  ## Remove rpid & rndc columns
+  dat[, c("rpid", "rndc") := NULL]
   
   ttime <- round(difftime(Sys.time(), stime, units = "sec"), 2)
   ttime <- paste(unclass(ttime), units(ttime))
