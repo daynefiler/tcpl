@@ -65,34 +65,34 @@
 #'     \item{pval.apid.mwlls.med}{Calculate pval as the median of cval for 
 #'     wells with wllt equal to "m," by apid.}
 #'     \item{pval.apid.medpcbyconc.max}{First calculate the median of cval for
-#'     wells with wllt equal to "p" or "c," by wllt, conc, and apid. Then 
+#'     wells with wllt equal to "p" or "c," by wllt, cndx, and apid. Then 
 #'     calculate pval as the maximum of the calculated medians, by apid.}
 #'     \item{pval.apid.medpcbyconc.min}{First calculate the median of cval for
-#'     wells with wllt equal to "p" or "c," by wllt, conc, and apid. Then 
+#'     wells with wllt equal to "p" or "c," by wllt, cndx, and apid. Then 
 #'     calculate pval as the minimum of the calculated medians, by apid.}
 #'     \item{pval.apid.medncbyconc.min}{First calculate the median of cval for
-#'     wells with wllt equal to "m" or "o," by wllt, conc, and apid. Then 
+#'     wells with wllt equal to "m" or "o," by wllt, cndx, and apid. Then 
 #'     calculate pval as the minimum of the calculated medians, by apid.}
 #'     \item{pval.apid.pmv.min}{First calculate the median of cval for
-#'     wells with wllt equal to "p," "m," or "v," by wllt, conc, and apid. Then 
+#'     wells with wllt equal to "p," "m," or "v," by wllt, cndx, and apid. Then 
 #'     calculate pval as the minimum of the calculated medians, by apid.}
 #'     \item{pval.apid.pmv.max}{First calculate the median of cval for
-#'     wells with wllt equal to "p," "m," or "v," by wllt, conc, and apid. Then 
+#'     wells with wllt equal to "p," "m," or "v," by wllt, cndx, and apid. Then 
 #'     calculate pval as the maximum of the calculated medians, by apid.}
 #'     \item{pval.apid.f.max}{First calculate the median of cval for
-#'     wells with wllt equal to "f," by wllt, conc, and apid. Then calculate 
+#'     wells with wllt equal to "f," by wllt, cndx, and apid. Then calculate 
 #'     pval as the maximum of the calculated medians, by apid.}
 #'     \item{pval.apid.f.min}{First calculate the median of cval for
-#'     wells with wllt equal to "f," by wllt, conc, and apid. Then calculate 
+#'     wells with wllt equal to "f," by wllt, cndx, and apid. Then calculate 
 #'     pval as the minimum of the calculated medians, by apid.}
 #'     \item{pval.apid.p.max}{First calculate the median of cval for
-#'     wells with wllt equal to "p," by wllt, conc, and apid. Then calculate 
+#'     wells with wllt equal to "p," by wllt, cndx, and apid. Then calculate 
 #'     pval as the maximum of the calculated medians, by apid.}
 #'     \item{pval.apid.p.min}{First calculate the median of cval for
-#'     wells with wllt equal to "p," by wllt, conc, and apid. Then calculate 
+#'     wells with wllt equal to "p," by wllt, cndx, and apid. Then calculate 
 #'     pval as the minimum of the calculated medians, by apid.}
 #'     \item{pval.apid.v.min}{First calculate the median of cval for
-#'     wells with wllt equal to "v," by wllt, conc, and apid. Then calculate 
+#'     wells with wllt equal to "v," by wllt, cndx, and apid. Then calculate 
 #'     pval as the minimum of the calculated medians, by apid.}
 #'     \item{pval.zero}{Define pval as 0.}
 #'   }
@@ -224,7 +224,7 @@ mc3_mthds <- function() {
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt %in% c("c", "p")], 
                                       na.rm = TRUE),
-                       by = list(aeid, apid, wllt, conc)])
+                       by = list(aeid, apid, wllt, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := max(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -238,7 +238,7 @@ mc3_mthds <- function() {
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt %in% c("c", "p")], 
                                       na.rm = TRUE),
-                       by = list(aeid, apid, wllt, conc)])
+                       by = list(aeid, apid, wllt, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := min(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -252,7 +252,7 @@ mc3_mthds <- function() {
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt %in% c("m","o")], 
                                       na.rm = TRUE),
-                       by = list(aeid, apid, wllt, conc)])
+                       by = list(aeid, apid, wllt, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := min(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -266,7 +266,7 @@ mc3_mthds <- function() {
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt %in% c("p", "m", "v")], 
                                       na.rm = TRUE),
-                       by = list(aeid, apid, wllt, conc)])
+                       by = list(aeid, apid, wllt, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := min(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -280,7 +280,7 @@ mc3_mthds <- function() {
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt %in% c("p", "m", "v")], 
                                       na.rm = TRUE),
-                       by = list(aeid, apid, wllt, conc)])
+                       by = list(aeid, apid, wllt, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := max(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -293,7 +293,7 @@ mc3_mthds <- function() {
       
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt == "f"], na.rm = TRUE),
-                       by = list(aeid, apid, conc)])
+                       by = list(aeid, apid, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := max(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -306,7 +306,7 @@ mc3_mthds <- function() {
       
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt == "f"], na.rm = TRUE),
-                       by = list(aeid, apid, conc)])
+                       by = list(aeid, apid, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := min(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -319,7 +319,7 @@ mc3_mthds <- function() {
       
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt == "p"], na.rm = TRUE),
-                       by = list(aeid, apid, conc)])
+                       by = list(aeid, apid, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := max(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -332,7 +332,7 @@ mc3_mthds <- function() {
       
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt == "p"], na.rm = TRUE),
-                       by = list(aeid, apid, conc)])
+                       by = list(aeid, apid, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := min(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -345,7 +345,7 @@ mc3_mthds <- function() {
       
       e1 <- bquote(dat[J(.(aeids)),
                        temp := median(cval[wllt == "v"], na.rm = TRUE),
-                       by = list(aeid, apid, conc)])
+                       by = list(aeid, apid, cndx)])
       e2 <- bquote(dat[J(.(aeids)),
                        pval := min(temp, na.rm = TRUE),
                        by = list(aeid, apid)])
@@ -524,8 +524,9 @@ mc3_mthds <- function() {
     bval.apid.nwllstcwllslowconc.med = function(aeids) {
       
       e1 <- bquote(dat[J(.(aeids)), 
-                       bval := median(cval[(cndx %in% 1:2 & wllt %in% c("t","c")) | 
-                                             wllt == "n"],
+                       bval := median(cval[(cndx %in% 1:2 & 
+                                              wllt %in% c("t","c")) |
+                                                wllt == "n"],
                                       na.rm = TRUE),
                        by = list(aeid, apid)])
       list(e1)

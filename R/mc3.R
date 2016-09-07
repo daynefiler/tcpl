@@ -55,9 +55,6 @@ mc3 <- function(ac, wr = FALSE) {
 
   stime <- Sys.time()
 
-  ## Force all concentrations to 1 significant figure
-  dat[ , conc := signif(conc, 1)]
-
   ## Add column for log10 concentration
   dat[ , logc := log10(conc)]
 
