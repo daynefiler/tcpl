@@ -12,6 +12,7 @@
 #' @param resp Numeric, normalized response values
 #' @param bmad Numeric, the baseline median absolute deviation for the entire
 #'             assay
+#' @param cndx Numeric, (optional) the concentration index, see details
 #' @param force.fit Logical, TRUE indicates to attempt fitting every 
 #'                  concentration series
 #' @param \dots Any other data to be included in list output.
@@ -19,6 +20,12 @@
 #' @details 
 #' By default, \code{tcplFit} will only attempt to fit concentration series
 #' when at least one median value is greater than 3*bmad.
+#' 
+#' If 'cndx' is given, the maximum median ('max_med') and maximum mean 
+#' ('max_mean') values, the number of unique concentrations ('nconc'), and the
+#' number of unique replicates ('nrep') are calculated using the 
+#' concentration index rather than the given log concentrations. Level 4 
+#' processing uses the concentration index. 
 #' 
 #' @examples 
 #' logc <- 1:10
@@ -38,7 +45,7 @@
 #' @export
 
 
-tcplFit <- function(logc, resp, bmad, force.fit = FALSE, ...) {
+tcplFit <- function(logc, resp, bmad, cndx = NULL, force.fit = FALSE, ...) {
   
   ## Variable-binding to pass R CMD Check
   hill_tp <- hill_ga <- hill_gw <- gnls_ga <- gnls_gw <- gnls_la <- NULL
@@ -48,11 +55,18 @@ tcplFit <- function(logc, resp, bmad, force.fit = FALSE, ...) {
   
   fenv <- environment()
   
+  crep <- if(is.null(cndx)) logc else cndx
+  logc_meds <- tapply(logc, crep, median)
+  
   bmad <- min(bmad)
-  rmns <- tapply(resp, logc, mean)
-  rmds <- tapply(resp, logc, median)
+  
+  rmns <- tapply(resp, crep, mean)
+  mmen <- max(rmns)
+  mmen_conc <- as.numeric(logc_meds[names(which.max(rmns))])
+  
+  rmds <- tapply(resp, crep, median)
   mmed <- max(rmds)
-  mmed_conc <- as.numeric(names(which.max(rmds)))
+  mmed_conc <- as.numeric(logc_meds[names(which.max(rmds))])
   
   hprs <- paste0("hill_", c("tp", "ga", "gw", "er"))
   hsds <- paste0("hill_", c("tp", "ga", "gw", "er"), "_sd")
@@ -65,9 +79,9 @@ tcplFit <- function(logc, resp, bmad, force.fit = FALSE, ...) {
   logc_min <- min(logc)
   logc_max <- max(logc)
   
-  ncnc <- lu(logc)
+  ncnc <- lu(crep)
   npts <- length(resp)
-  nrep <- as.numeric(median(tapply(resp, logc, lu))) # Meidan number replicates
+  nrep <- as.numeric(median(tapply(resp, crep, lu))) # Meidan number replicates
   nmed_gtbl <- lw(rmds >= 3 * bmad) # Number of medians above 3 * bmad 
   
   ## Do not fit anything with less than four concentrations of data.
@@ -365,8 +379,8 @@ tcplFit <- function(logc, resp, bmad, force.fit = FALSE, ...) {
   
   out <- list(resp_max      = resp_max,
               resp_min      = resp_min,
-              max_mean      = max(rmns),
-              max_mean_conc = as.numeric(names(which.max(rmns))),
+              max_mean      = mmen,
+              max_mean_conc = mmen_conc,
               max_med       = mmed,
               max_med_conc  = mmed_conc,
               logc_max      = logc_max,

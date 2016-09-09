@@ -117,6 +117,7 @@ mc4 <- function(ae, wr = FALSE) {
                               tcplFit(logc = logc,
                                       resp = resp,
                                       bmad = bmad,
+                                      cndx = cndx,
                                       force.fit = fit_all)),
       by = spid,
       with = FALSE]
